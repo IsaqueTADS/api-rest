@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch src/server.ts",
+    "dev": "node --env-file .env --watch src/server.ts",
     "lint": "eslint src --ext .ts --fix",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -27,6 +27,7 @@
     "eslint-plugin-sort": "^4.0.0",
     "fastify": "^5.6.1",
     "pg": "^8.16.3",
-    "pino-prettier": "^3.0.1-dev"
+    "pino-prettier": "^3.0.1-dev",
+    "uuid": "13.0.0"
   }
 }
