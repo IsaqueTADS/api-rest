@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "@rocketseat/eslint-config/node"
+  ],
+  "plugins": [
+    "sort"
+  ],
+  "rules": {
+    "linebreak-style": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
+  }
+}
