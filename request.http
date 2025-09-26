@@ -1,4 +1,15 @@
-GET http://localhost:3333/users
+POST http://localhost:3333/transactions
+Content-Type: application/json
+
+
+{
+ "title" : "raparigas"
+}
+
+
+
+
+###
 
 
 ###
