@@ -48,7 +48,9 @@ app.register(scalarAPIReference, {
   },
 });
 
-app.register(transactionRoutes);
+app.register(transactionRoutes, {
+  prefix: 'transactions',
+});
 
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);

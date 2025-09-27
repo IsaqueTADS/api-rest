@@ -3,7 +3,9 @@ Content-Type: application/json
 
 
 {
- "title" : "raparigas"
+ "title" : "raparigas",
+ "amount": "1000.400",
+ "type":"debit"
 }
 
 
@@ -11,5 +13,14 @@ Content-Type: application/json
 
 ###
 
+ GET http://localhost:3333/transactions
 
 ###
+
+ GET http://localhost:3333/transactions/summary
+
+###
+
+ GET http://localhost:3333/transactions/01998242-4796-72ba-aab3-ec51bda26f47
+
+ 
