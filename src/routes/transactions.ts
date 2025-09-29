@@ -8,6 +8,10 @@ import { transactions } from '../db/schema.ts';
 import { checkSessionIdExists } from '../middlewares/check-session-id-exist.ts';
 
 export const transactionRoutes: FastifyPluginAsyncZod = async (app) => {
+  app.addHook('preHandler', async (request) => {
+    console.log(`[${request.method} ${request.url}]`);
+  });
+
   app.get(
     '/',
     {
