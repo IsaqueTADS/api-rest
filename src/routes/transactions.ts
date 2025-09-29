@@ -1,5 +1,6 @@
 import { eq, sum } from 'drizzle-orm';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { v7 as uuidv7 } from 'uuid';
 import { z } from 'zod';
 
 import { db } from '../db/index.ts';
@@ -105,12 +106,24 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const { title, amount, type } = request.body;
 
+      let sessionId = request.cookies.session_id;
+
+      if (!sessionId) {
+        sessionId = uuidv7();
+
+        reply.cookie('sessionId', sessionId, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7, // 7 days
+        });
+      }
+
       await db.insert(transactions).values({
         title,
         amount:
           type === 'credit'
             ? amount
             : (Number(amount) * -1).toFixed(2).toString(),
+        session_id: sessionId,
       });
 
       return reply.status(201).send();
