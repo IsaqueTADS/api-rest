@@ -1,15 +1,17 @@
-import { eq, sum } from 'drizzle-orm';
+import { and, eq, SQL, sum } from 'drizzle-orm';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { v7 as uuidv7 } from 'uuid';
 import { z } from 'zod';
 
 import { db } from '../db/index.ts';
 import { transactions } from '../db/schema.ts';
+import { checkSessionIdExists } from '../middlewares/check-session-id-exist.ts';
 
 export const transactionRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/',
     {
+      preHandler: [checkSessionIdExists],
       schema: {
         tags: ['transactions'],
         summary: 'get all transactions',
@@ -25,11 +27,19 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (app) => {
               })
             ),
           }),
+          401: z.object({
+            error: z.string().describe('Unauthorized.'),
+          }),
         },
       },
     },
-    async () => {
-      const result = await db.select().from(transactions);
+    async (request) => {
+      const sessionId = request.sessionId!;
+
+      const result = await db
+        .select()
+        .from(transactions)
+        .where(eq(transactions.session_id, sessionId));
 
       return { transactions: result };
     }
@@ -38,6 +48,7 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/:id',
     {
+      preHandler: [checkSessionIdExists],
       schema: {
         tags: ['transactions'],
         summary: 'get transaction by id',
@@ -59,11 +70,20 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (request) => {
       const { id } = request.params;
+      const sessionId = request.sessionId!;
+
+      console.log('sesssion', sessionId);
+      console.log('oi');
+
+      const conditions: SQL[] = [];
+
+      conditions.push(eq(transactions.id, id));
+      conditions.push(eq(transactions.session_id, sessionId));
 
       const transaction = await db
         .select()
         .from(transactions)
-        .where(eq(transactions.id, id));
+        .where(and(...conditions));
 
       return { transaction: transaction[0] };
     }
@@ -72,15 +92,20 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/summary',
     {
+      preHandler: [checkSessionIdExists],
       schema: {
+        preHandler: [checkSessionIdExists],
         tags: ['transactions'],
         summary: 'get summary',
       },
     },
-    async () => {
+    async (request) => {
+      const sessionId = request.sessionId!;
+
       const summary = await db
         .select({ amount: sum(transactions.amount) })
-        .from(transactions);
+        .from(transactions)
+        .where(eq(transactions.session_id, sessionId));
 
       return { summary: summary[0] };
     }
@@ -106,7 +131,7 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const { title, amount, type } = request.body;
 
-      let sessionId = request.cookies.session_id;
+      let sessionId = request.cookies.sessionId;
 
       if (!sessionId) {
         sessionId = uuidv7();
