@@ -19,9 +19,11 @@
     "@types/pg": "8.15.5",
     "drizzle-kit": "0.31.4",
     "eslint": "^8.57.1",
+    "eslint-plugin-simple-import-sort": "12.1.1",
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@fastify/cookie": "11.0.2",
     "@fastify/swagger": "9.5.2",
     "@scalar/fastify-api-reference": "1.36.0",
     "@types/node": "^24.5.2",

@@ -1,17 +1,16 @@
-import fastify from 'fastify';
-
-import { transactionRoutes } from './routes/transactions.ts';
-
+import cookie from '@fastify/cookie';
 import { fastifySwagger } from '@fastify/swagger';
 import scalarAPIReference from '@scalar/fastify-api-reference';
-
+import fastify from 'fastify';
 import {
-  validatorCompiler,
-  serializerCompiler,
-  type ZodTypeProvider,
   jsonSchemaTransform,
+  serializerCompiler,
+  validatorCompiler,
+  type ZodTypeProvider,
 } from 'fastify-type-provider-zod';
+
 import { env } from './env/index.ts';
+import { transactionRoutes } from './routes/transactions.ts';
 
 const envToLogger = {
   development: {
@@ -30,6 +29,8 @@ const envToLogger = {
 export const app = fastify({
   logger: envToLogger[env.NODE_ENV] ?? true,
 }).withTypeProvider<ZodTypeProvider>();
+
+app.register(cookie);
 
 app.register(fastifySwagger, {
   openapi: {

@@ -1,9 +1,9 @@
 import { eq, sum } from 'drizzle-orm';
-import { db } from '../db/index.ts';
-import { transactions } from '../db/schema.ts';
-
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+
+import { db } from '../db/index.ts';
+import { transactions } from '../db/schema.ts';
 
 export const transactionRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(

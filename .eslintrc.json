@@ -3,10 +3,12 @@
     "@rocketseat/eslint-config/node"
   ],
   "plugins": [
-    "sort"
+    "simple-import-sort"
   ],
   "rules": {
     "linebreak-style": "off",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
     "prettier/prettier": [
       "error",
       {
